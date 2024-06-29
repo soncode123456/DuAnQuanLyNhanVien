@@ -1,57 +1,83 @@
 // Bước 4: Validation
-export function kiemTraNhapThongTin(nvMoi) {
-    // Trích xuất dữ liệu đầu vào, khỏi tạo biến chứa các giá trị cố định
-    let {tknv, name, email, password, datepicker, luongCB, chucvu, gioLam} = nvMoi;
-    let taiKhoanMinLenght = 4;
-    let taiKhoanMaxLenght = 6;
-    let gioLamMin = 80;
-    let gioLamMax = 200;
-
-    // Kiểm tra tính hợp lệ của dữ liệu
-    // Kiểm tra tài khoản có độ dài hợp lệ và không trống.
-    if(!tknv || tknv.lenght < taiKhoanMinLenght || tknv.lenght > taiKhoanMaxLenght) {
-        alert('Tài khoản phải có từ 4 đến 6 ký số, không để trống');
+function kiemTraTaiKhoan(tknv, minLen, maxLen) {
+    if (!tknv || tknv.length < minLen || tknv.length > maxLen || !/^\d+$/.test(tknv)) {
+        alert('Tài khoản phải có từ 4 đến 6 ký số, không để trống và chỉ được chứa ký tự số.');
         return false;
     }
-    // Kiểm tra Tên nhân viên chỉ chứa chữ cái và khoảng trắng và không trống.
+    return true;
+}
+
+function kiemTraTen(name) {
     if (!name || !name.match(/^[\p{L}\s]+$/u)) {
         alert('Tên nhân viên không được để trống và chỉ được chứa chữ cái và khoảng trắng.');
         return false;
     }
-    // Kiểm tra Email có định dạng hợp lệ và không trống.
+    return true;
+}
+
+function kiemTraEmail(email) {
     let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailPattern.test(email)) {
         alert('Email không được để trống và phải đúng định dạng.');
         return false;
     }
-    // Kiểm tra Mật khẩu đáp ứng yêu cầu về độ dài và thành phần.
+    return true;
+}
+
+function kiemTraMatKhau(password) {
     let passwordPattern = /^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,10})/;
     if (!password || !passwordPattern.test(password)) {
         alert('Mật khẩu không được để trống và phải từ 6 đến 10 ký tự (bao gồm ít nhất 1 số, 1 chữ cái viết hoa và 1 ký tự đặc biệt).');
         return false;
     }
-    // Kiểm tra Ngày làm có định dạng hợp lệ và không trống.
+    return true;
+}
+
+function kiemTraNgayLam(datepicker) {
     let [month, day, year] = datepicker.split('/');
     let ngayLamDate = new Date(`${month}/${day}/${year}`);
     if (!datepicker || isNaN(ngayLamDate.getTime())) {
         alert('Ngày làm không được để trống và phải có định dạng mm/dd/yyyy.');
         return false;
     }
-    // Kiểm tra Lương cơ bản nằm trong khoảng quy định và không trống.
-    if (!luongCB || luongCB < 1000000 || luongCB > 20000000) {
-        alert('Lương cơ bản không được để trống và phải từ 1.000.000 đến 20.000.000.');
+    return true;
+}
+
+function kiemTraLuongCB(luongCB) {
+    if (!luongCB || isNaN(luongCB) || luongCB < 1000000 || luongCB > 20000000) {
+        alert('Lương cơ bản không được để trống, phải từ 1.000.000 đến 20.000.000 và chỉ được chứa ký tự số.');
         return false;
     }
-    // Kiểm tra Chức vụ phải được chọn từ danh sách quy định.
+    return true;
+}
+
+function kiemTraChucVu(chucvu) {
     if (!chucvu || (chucvu !== 'Sếp' && chucvu !== 'Trưởng phòng' && chucvu !== 'Nhân viên')) {
         alert('Vui lòng chọn chức vụ hợp lệ.');
         return false;
     }
-    // Kiểm tra Số giờ làm trong tháng nằm trong khoảng quy định và không trống.
-    if (!gioLam || gioLam < gioLamMin || gioLam > gioLamMax) {
-        alert('Số giờ làm trong tháng không được để trống và phải từ 80 đến 200 giờ.');
+    return true;
+}
+
+function kiemTraGioLam(gioLam, min, max) {
+    if (!gioLam || isNaN(gioLam) || gioLam < min || gioLam > max) {
+        alert('Số giờ làm trong tháng không được để trống, phải từ 80 đến 200 giờ và chỉ được chứa ký tự số.');
         return false;
     }
+    return true;
+}
+
+export function kiemTraNhapThongTin(nvMoi) {
+    let {tknv, name, email, password, datepicker, luongCB, chucvu, gioLam} = nvMoi;
+
+    if (!kiemTraTaiKhoan(tknv, 4, 6)) return false;
+    if (!kiemTraTen(name)) return false;
+    if (!kiemTraEmail(email)) return false;
+    if (!kiemTraMatKhau(password)) return false;
+    if (!kiemTraNgayLam(datepicker)) return false;
+    if (!kiemTraLuongCB(luongCB)) return false;
+    if (!kiemTraChucVu(chucvu)) return false;
+    if (!kiemTraGioLam(gioLam, 80, 200)) return false;
 
     return true; // Trả về true nếu dữ liệu nhập vào hợp lệ
 }
